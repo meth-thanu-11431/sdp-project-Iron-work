@@ -1,0 +1,96 @@
+/* Center the form in the viewport */
+.login-signup-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #6e7fef, #4a5a99); 
+    margin-top: -80px;
+  }
+  
+  /* Card style with shadows and rounded corners */
+  .login-signup-card {
+    width: 100%;
+    max-width: 400px;
+    background-color: #fff;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15); /* Soft shadow effect */
+    border-radius: 12px;
+    padding: 20px;
+  }
+  
+  /* Card header styling */
+  .card-header {
+    background-color: #5c6bc0; /* Soft blue header */
+    color: white;
+    padding: 20px;
+    border-radius: 12px 12px 0 0;
+  }
+  
+  .card-header h4 {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  
+  /* Input and form control styling */
+  .card-body .form-label {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+  .card-body .form-control {
+    padding: 12px 15px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+  }
+  
+  .card-body .form-control:focus {
+    border-color: #5c6bc0;
+    box-shadow: 0 0 8px rgba(92, 107, 192, 0.3);
+  }
+  
+  /* Button style */
+  .card-body .btn-primary {
+    background-color: #5c6bc0;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .card-body .btn-primary:hover {
+    background-color: #3f4b8e;
+  }
+  
+  /* Text link style */
+  .card-body .btn-link {
+    color: #5c6bc0;
+    font-size: 1rem;
+    text-decoration: none;
+  }
+  
+  .card-body .btn-link:hover {
+    text-decoration: underline;
+  }
+  
+  /* Error message styling */
+  .alert {
+    border-radius: 8px;
+    font-size: 0.9rem;
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 576px) {
+    .login-signup-card {
+      width: 90%;
+      padding: 15px;
+      margin: 10px;
+    }
+  }
+  

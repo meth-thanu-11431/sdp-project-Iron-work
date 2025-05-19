@@ -1,0 +1,154 @@
+/* Dashboard.css */
+
+.p-4.leftpart {
+  background-color: #f8f9fa;
+}
+
+/* Card Styling */
+.card {
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #eaeaea;
+  padding: 15px 20px;
+  font-weight: 600;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+/* Professional Color Scheme */
+.bg-gradient.shadow-sm[bg="primary"] {
+  background: linear-gradient(135deg, #1a2142, #2c3563) !important;
+}
+
+.bg-gradient.shadow-sm[bg="info"] {
+  background: linear-gradient(135deg, #3498db, #2980b9) !important;
+}
+
+.bg-gradient.shadow-sm[bg="success"] {
+  background: linear-gradient(135deg, #2ecc71, #27ae60) !important;
+}
+
+.bg-gradient.shadow-sm[bg="warning"] {
+  background: linear-gradient(135deg, #f39c12, #e67e22) !important;
+}
+
+/* Tables */
+.table {
+  margin-bottom: 0;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #eaeaea;
+  color: #495057;
+  font-weight: 600;
+}
+
+.table td {
+  vertical-align: middle;
+  border-color: #eaeaea;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Chart Styling */
+.recharts-default-tooltip {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  padding: 12px !important;
+}
+
+/* Badge Styling */
+.badge {
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+/* Button Styling */
+.btn-outline-primary {
+  color: #1a2142;
+  border-color: #1a2142;
+}
+
+.btn-outline-primary:hover {
+  background-color: #1a2142;
+  border-color: #1a2142;
+}
+
+/* Spinner */
+.spinner-border[variant="primary"] {
+  color: #1a2142;
+}
+
+/* Status Details Cards */
+.d-flex.justify-content-between {
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.d-flex.justify-content-between:last-child {
+  border-bottom: none;
+}
+
+/* Title styling */
+h2, h4, h5 {
+  color: #1a2142;
+  font-weight: 600;
+}
+
+h4 {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+/* Alert styling */
+.alert {
+  border-radius: 8px;
+  border: none;
+}
+
+/* Export buttons */
+.btn-outline-primary {
+  font-weight: 500;
+  border-radius: 6px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .card-title {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .card-body {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 576px) {
+  .container-fluid.p-4 {
+    padding: 15px !important;
+  }
+}

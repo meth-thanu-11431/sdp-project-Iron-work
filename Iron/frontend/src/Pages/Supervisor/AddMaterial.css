@@ -1,0 +1,151 @@
+/* AddMaterial.css */
+
+/* Remove any horizontal scrolling */
+body {
+  overflow-x: hidden;
+  background-color: #f4f7fc; /* Soft background color from your CSS */
+  font-family: 'Roboto', sans-serif; /* Clean and modern font */
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Apply animation to the form elements */
+.MuiPaper-root {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Center the form in the page */
+.MuiContainer-root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 85vh; /* This helps center the form vertically */
+}
+
+/* Heading styles from your CSS */
+.heading, .MuiTypography-h4 {
+  text-align: center;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Apply your button styles */
+.MuiButton-root {
+  border-radius: 5px !important; /* Rounded button */
+  padding: 12px !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  background-color: #3f51b5 !important; /* Primary color */
+  transition: all 0.3s ease !important;
+}
+
+.MuiButton-root:hover:not([disabled]) {
+  background-color: #303f9f !important; /* Darker shade on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(63, 81, 181, 0.4) !important;
+}
+
+/* Input field styles from your CSS */
+.MuiOutlinedInput-root {
+  border-radius: 10px !important; /* Rounded input fields */
+  background-color: #fff !important;
+  transition: all 0.3s ease !important;
+}
+
+.MuiInputLabel-root {
+  color: #5f6368 !important; /* Soft label color */
+}
+
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #3f51b5 !important; /* Highlight input fields on hover */
+}
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #3f51b5 !important;
+}
+
+/* Custom styles for file upload */
+.upload-container {
+  background-color: #f8f9fa;
+  border: 2px dashed #3f51b5 !important;
+  border-radius: 10px !important;
+}
+
+/* Animation for image previews */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Apply scale-in animation to image previews */
+img[alt^="Preview"] {
+  animation: scaleIn 0.3s ease-out;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+/* Image preview container */
+.image-preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.image-preview-item {
+  position: relative;
+  display: inline-block;
+}
+
+/* Remove image button styling */
+.remove-image-button, .MuiButton-containedError {
+  position: absolute !important;
+  top: 5px !important;
+  right: 5px !important;
+  background: #ff4081 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 50% !important;
+  width: 25px !important;
+  height: 25px !important;
+  min-width: 25px !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+}
+
+.remove-image-button:hover, .MuiButton-containedError:hover {
+  background: #e91e63 !important; /* Darker shade on hover */
+}
+
+/* Improve form appearance on smaller screens */
+@media (max-width: 600px) {
+  .MuiContainer-root {
+    padding-left: 12px;
+    padding-right: 12px;
+    min-height: 100%;
+  }
+  
+  .MuiPaper-root {
+    padding: 20px !important;
+  }
+}

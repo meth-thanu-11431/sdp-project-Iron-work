@@ -1,0 +1,43 @@
+/* General Styles */
+body {
+  margin: 0;
+  font-family: 'Roboto', Arial, sans-serif;
+  background-color: #f5f5f5;
+}
+
+/* Sidebar Styles */
+.MuiDrawer-paper {
+  transition: all 0.3s ease;
+}
+
+/* Custom scrollbar for the sidebar */
+.MuiDrawer-paper::-webkit-scrollbar {
+  width: 5px;
+}
+
+.MuiDrawer-paper::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.MuiDrawer-paper::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.MuiDrawer-paper::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Content Area */
+.content {
+  margin-left: 240px;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0;
+  }
+}

@@ -1,0 +1,326 @@
+/* Header.css */
+
+/* Main container */
+.header-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Carousel styling */
+.header-carousel {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1.2s ease, transform 1.2s ease;
+}
+
+.header-carousel.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Image container and sizing */
+.carousel-image-container {
+  position: relative;
+  height: 100vh;
+  max-height: 900px;
+  min-height: 600px;
+  overflow: hidden;
+}
+
+.carousel-image {
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+  height: 100%;
+  transform: scale(1.05);
+  transition: transform 7s ease;
+}
+
+.carousel-item.active .carousel-image {
+  transform: scale(1);
+}
+
+/* Overlays */
+.gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.6) 35%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  z-index: 1;
+}
+
+.pattern-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.3;
+  z-index: 2;
+}
+
+/* Caption styling */
+.carousel-caption {
+  top: 50%;
+  transform: translateY(-50%);
+  bottom: auto;
+  left: 0;
+  right: 0;
+  padding: 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: left;
+  z-index: 3;
+}
+
+.caption-content {
+  max-width: 650px;
+  padding: 0 20px;
+  margin-left: 10%;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 1s forwards;
+  animation-delay: 0.5s;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Logo styling */
+.logo-container {
+  margin-bottom: 2rem;
+}
+
+.header-logo {
+  height: 70px;
+  width: auto;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+}
+
+/* Text elements */
+.subtitle {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.main-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  color: white;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.separator {
+  width: 80px;
+  height: 4px;
+  background-color: #3b82f6;
+  margin-bottom: 1.5rem;
+}
+
+.description {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 90%;
+}
+
+/* CTA Buttons */
+.cta-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.main-cta-button {
+  padding: 0.8rem 1.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  transition: all 0.3s ease;
+}
+
+.main-cta-button:hover {
+  background-color: #2563eb;
+  border-color: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.secondary-cta-button {
+  padding: 0.8rem 1.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 2px solid white;
+  transition: all 0.3s ease;
+}
+
+.secondary-cta-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Carousel indicators */
+.carousel-indicators {
+  margin-bottom: 3rem;
+}
+
+.carousel-indicators button {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin: 0 5px;
+  background-color: rgba(255, 255, 255, 0.5);
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.carousel-indicators button.active {
+  background-color: white;
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* Scroll indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+  z-index: 10;
+  transition: opacity 0.3s ease;
+}
+
+.scroll-indicator span {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.scroll-indicator .bounce {
+  animation: bounce 2s infinite;
+  font-size: 1.5rem;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .caption-content {
+    margin-left: 5%;
+  }
+  
+  .main-title {
+    font-size: 2.8rem;
+  }
+  
+  .carousel-image-container {
+    height: 80vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-caption {
+    text-align: center;
+  }
+  
+  .caption-content {
+    margin: 0 auto;
+    padding: 0 30px;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .main-title {
+    font-size: 2.2rem;
+  }
+  
+  .description {
+    margin: 0 auto 2rem auto;
+  }
+  
+  .separator {
+    margin: 0 auto 1.5rem auto;
+  }
+  
+  .cta-container {
+    justify-content: center;
+  }
+  
+  .header-logo {
+    height: 60px;
+  }
+}
+
+@media (max-width: 576px) {
+  .main-title {
+    font-size: 1.8rem;
+  }
+  
+  .description {
+    font-size: 1rem;
+  }
+  
+  .carousel-image-container {
+    min-height: 500px;
+  }
+  
+  .cta-container {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  
+  .main-cta-button, .secondary-cta-button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,45 @@
+/* TourList.css */
+.container {
+    max-width: 1200px;
+  }
+  
+  .card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .card-body {
+    text-align: center;
+  }
+  
+  .card-title {
+    font-weight: bold;
+  }
+  
+  .card-text {
+    color: #757575;
+  }
+  
+  .card-footer {
+    display: flex;
+    justify-content: center;
+  }
+  
+  button {
+    font-weight: 600;
+  }
+  .list-tour-container {
+    background-color: #f4f7fc; /* Soft background color */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    font-family: 'Roboto', sans-serif; /* Clean and modern font */
+    
+  }
