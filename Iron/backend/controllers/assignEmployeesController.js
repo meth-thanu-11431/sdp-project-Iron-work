@@ -280,7 +280,7 @@ export const assignResources = async (req, res) => {
 
         return res.status(400).json({
           success: false,
-          message: `Some machines are already assigned to other jobs on this date: ${conflictDetails}`,
+          message: `Some machines are already assigned to other jobs on this date`,
           conflictingMachines: busyMachines,
         });
       }

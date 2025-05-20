@@ -22,7 +22,8 @@ import {
   FaMoneyBillWave,
   FaCheckCircle,
   FaClock,
-  FaTimesCircle
+  FaTimesCircle,
+  FaTag
 } from "react-icons/fa";
 import { BsCreditCard, BsCashCoin, BsCurrencyDollar } from "react-icons/bs";
 
@@ -74,6 +75,47 @@ const UserInvoices = () => {
         );
 
         const invoicesList = Object.values(categorizedInvoices);
+        
+        // Fetch job categories for all invoices in a more efficient way
+        try {
+          // Get all unique quotation IDs from invoices
+          const quotationIds = [...new Set(invoicesList.map(invoice => invoice.quotation_id))];
+          
+          if (quotationIds.length > 0) {
+            // Create a map to store quotation data
+            const quotationMap = {};
+            
+            // Fetch quotation details one by one using the correct endpoint
+            for (const quotationId of quotationIds) {
+              try {
+                const quotationResponse = await axios.get(
+                  `http://localhost:4000/api/quotation/get_one/${quotationId}`,
+                  {
+                    headers: { token },
+                  }
+                );
+                
+                if (quotationResponse.data.success && quotationResponse.data.quotation) {
+                  quotationMap[quotationId] = quotationResponse.data.quotation.job_category;
+                }
+              } catch (singleQuotationErr) {
+                console.error(`Error fetching quotation ${quotationId}:`, singleQuotationErr);
+                // Continue with other quotations
+              }
+            }
+            
+            // Assign job categories to invoices
+            invoicesList.forEach(invoice => {
+              if (invoice.quotation_id && quotationMap[invoice.quotation_id]) {
+                invoice.job_category = quotationMap[invoice.quotation_id];
+              }
+            });
+          }
+        } catch (quotationErr) {
+          console.error("Error in quotation fetching process:", quotationErr);
+          // Continue with the invoices we have even if quotation fetch fails
+        }
+        
         setInvoices(invoicesList);
         
         // Calculate statistics
@@ -139,6 +181,10 @@ const UserInvoices = () => {
     doc.setFontSize(10);
     doc.text(`Invoice #: ${invoice.invoice_id}`, 20, 60);
     doc.text(`Date: ${new Date(invoice.created_at).toLocaleDateString()}`, 20, 68);
+    // Add job category to the PDF if available
+    if (invoice.job_category) {
+      doc.text(`Category: ${invoice.job_category}`, 20, 76);
+    }
     
     // Customer info section (if available in your data)
     if (invoice.customer_name) {
@@ -149,7 +195,7 @@ const UserInvoices = () => {
     }
     
     // Items table
-    const tableStartY = 80;
+    const tableStartY = 85; // Adjusted to accommodate for job category
     const tableHeaders = [["Item", "Quantity", "Unit Price (LKR)", "Amount (LKR)"]];
     
     const tableData = invoice.items.map((item) => [
@@ -238,6 +284,7 @@ const UserInvoices = () => {
           searchTerm === "" ||
           invoice.invoice_id?.toLowerCase().includes(searchLower) ||
           invoice.payment_status?.toLowerCase().includes(searchLower) ||
+          invoice.job_category?.toLowerCase().includes(searchLower) || // Added job category to search
           invoice.items.some(item => 
             item.material_name?.toLowerCase().includes(searchLower)
           )
@@ -412,8 +459,6 @@ const UserInvoices = () => {
             </Col>
           </Row>
 
-          
-
           {/* Error message */}
           {error && (
             <Alert variant="danger" className="mb-4 d-flex align-items-center">
@@ -440,11 +485,20 @@ const UserInvoices = () => {
                   <Card className="h-100 shadow-sm border-0">
                     <Card.Header className="bg-white py-3 border-bottom" style={{ borderBottomColor: "#f1f5f9" }}>
                       <div className="d-flex justify-content-between align-items-center">
-                        <div className="d-flex align-items-center">
-                          <FaFileInvoiceDollar className="text-primary me-2" size={18} />
-                          <h5 className="mb-0" style={{ color: "#1a2142", fontWeight: 600 }}>
-                            Invoice #{invoice.invoice_id}
-                          </h5>
+                        <div>
+                          <div className="d-flex align-items-center">
+                            <FaFileInvoiceDollar className="text-primary me-2" size={18} />
+                            <h5 className="mb-0" style={{ color: "#1a2142", fontWeight: 600 }}>
+                              Invoice #{invoice.invoice_id}
+                            </h5>
+                          </div>
+                          {/* Add job category below invoice number */}
+                          {invoice.job_category && (
+                            <div className="d-flex align-items-center mt-1 ms-1">
+                              <FaTag className="text-muted me-1" size={12} />
+                              <small className="text-muted">{invoice.job_category}</small>
+                            </div>
+                          )}
                         </div>
                         {getStatusBadge(invoice.payment_status)}
                       </div>

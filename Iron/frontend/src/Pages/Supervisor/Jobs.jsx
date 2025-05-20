@@ -1291,9 +1291,7 @@ const JobManagement = () => {
           dialogClassName="resource-assignment-modal"
         >
           <Modal.Header closeButton className="bg-light">
-            <Modal.Title>
-              Assign Resources to: <strong>{selectedJob?.job_name}</strong>
-            </Modal.Title>
+           
           </Modal.Header>
           <Modal.Body>
             {validationErrors.length > 0 && (
