@@ -58,24 +58,22 @@ export const createQuotation = async (req, res) => {
   }
 };
 
-
 const formatDateForSql = (dateString) => {
   if (!dateString) return null;
-  
+
   try {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) {
       console.error("Invalid date:", dateString);
       return null;
     }
-    
-    return date.toISOString().split('T')[0];
+
+    return date.toISOString().split("T")[0];
   } catch (e) {
     console.error("Error formatting date:", e);
     return null;
   }
 };
-
 
 export const getQuotationMaterials = async (req, res) => {
   const { quotationId } = req.params;
@@ -308,7 +306,7 @@ export const getPartiallyPaidJobs = async (req, res) => {
 export const getPartiallyPaidInvoices = async (req, res) => {
   try {
     console.log("Starting getPartiallyPaidInvoices function");
-    
+
     // FIXED: Added immediate field from quotations to use as finish_date in jobs
     const [invoices] = await pool.query(`
       SELECT 
@@ -333,9 +331,9 @@ export const getPartiallyPaidInvoices = async (req, res) => {
       WHERE i.payment_status = 'Partially Paid'
       ORDER BY i.created_at DESC
     `);
-    
+
     console.log(`Found ${invoices.length} partially paid invoices`);
-    
+
     // For each invoice, check if a job already exists
     for (let i = 0; i < invoices.length; i++) {
       try {
@@ -344,13 +342,16 @@ export const getPartiallyPaidInvoices = async (req, res) => {
           "SELECT * FROM jobs WHERE quotation_id = ?",
           [invoices[i].quotation_id]
         );
-        
+
         // If job exists, add it to the invoice object
         if (existingJobs.length > 0) {
           invoices[i].existingJob = existingJobs[0];
         }
       } catch (jobError) {
-        console.error(`Error checking jobs for invoice ${invoices[i].id}:`, jobError);
+        console.error(
+          `Error checking jobs for invoice ${invoices[i].id}:`,
+          jobError
+        );
         // Continue without job data
       }
     }
@@ -403,21 +404,21 @@ export const getQuotationById = async (req, res) => {
 
 // Create or update a job
 export const createOrUpdateJob = async (req, res) => {
-  const { 
-    quotationId, 
+  const {
+    quotationId,
     invoiceId,
-    jobName, 
+    jobName,
     jobCategory,
     actualStartDate, // This should go into start_date, not finish_date
-    status, 
+    status,
     customerId,
     quotationAmount,
-    jobID
+    jobID,
   } = req.body;
 
   try {
     console.log("Create or update job request:", {
-      quotationId, 
+      quotationId,
       invoiceId,
       jobName,
       jobCategory,
@@ -425,7 +426,7 @@ export const createOrUpdateJob = async (req, res) => {
       status,
       customerId,
       quotationAmount,
-      jobID
+      jobID,
     });
 
     // First, we need to get the immediate date from the quotation table
@@ -438,13 +439,13 @@ export const createOrUpdateJob = async (req, res) => {
     if (quotationData.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "Quotation not found"
+        message: "Quotation not found",
       });
     }
-    
+
     // Get the immediate date from quotation to use as finish_date
     const immediateDate = quotationData[0].immediate;
-    
+
     console.log("Got immediate date from quotation:", immediateDate);
 
     // Format dates for database
@@ -454,7 +455,7 @@ export const createOrUpdateJob = async (req, res) => {
     if (!formattedStartDate) {
       return res.status(400).json({
         success: false,
-        message: "Invalid start date format"
+        message: "Invalid start date format",
       });
     }
 
@@ -465,7 +466,7 @@ export const createOrUpdateJob = async (req, res) => {
     );
 
     let jobId;
-    
+
     if (existingJobs.length > 0) {
       // FIXED: Update existing job - actualStartDate goes to start_date, immediateDate goes to finish_date
       await pool.query(
@@ -477,17 +478,17 @@ export const createOrUpdateJob = async (req, res) => {
         [
           formattedStartDate, // Actual start date goes to start_date column
           formattedFinishDate, // Immediate date from quotation goes to finish_date column
-          status, 
-          existingJobs[0].id
+          status,
+          existingJobs[0].id,
         ]
       );
       jobId = existingJobs[0].id;
-      
+
       console.log("Updated existing job:", {
         jobId,
         start_date: formattedStartDate,
         finish_date: formattedFinishDate,
-        status
+        status,
       });
     } else {
       // FIXED: Create new job - actualStartDate goes to start_date, immediateDate goes to finish_date
@@ -505,24 +506,27 @@ export const createOrUpdateJob = async (req, res) => {
           status,
           customerId,
           quotationAmount,
-          jobID
+          jobID,
         ]
       );
-      
+
       jobId = result.insertId;
-      
+
       console.log("Created new job:", {
         jobId,
         start_date: formattedStartDate,
         finish_date: formattedFinishDate,
-        status
+        status,
       });
     }
 
     return res.status(200).json({
       success: true,
-      message: existingJobs.length > 0 ? "Job updated successfully" : "Job created successfully",
-      jobId
+      message:
+        existingJobs.length > 0
+          ? "Job updated successfully"
+          : "Job created successfully",
+      jobId,
     });
   } catch (err) {
     console.error("Error creating/updating job:", err);
@@ -532,7 +536,6 @@ export const createOrUpdateJob = async (req, res) => {
     });
   }
 };
-
 
 //2025.05.17 updated code
 // New endpoint for customer to update quotation approval status
@@ -864,19 +867,21 @@ export const getInvoicesByUserId2 = async (req, res) => {
     // Fetch invoice details based on both userId and invoiceId
     const [invoices] = await pool.query(
       `SELECT 
-        i.id AS invoice_id,
-        i.quotation_id,
-        i.total_amount,
-        i.paid_amount,
-        i.payment_status,
-        i.created_at,
-        q.customer_id, 
-        q.job_description
-      FROM invoices i
-      JOIN quotations q ON i.quotation_id = q.id
-      WHERE q.customer_id = ? AND i.id = ?  -- Check both userId (customer_id) and invoiceId
-      ORDER BY i.id DESC`,
-      [userId, invoiceId] // Use both userId and invoiceId from the request body
+    i.id AS invoice_id,
+    i.quotation_id,
+    i.total_amount,
+    i.paid_amount,
+    i.payment_status,
+    i.created_at,
+    q.customer_id, 
+    q.job_description,
+    c.customer_name
+  FROM invoices i
+  JOIN quotations q ON i.quotation_id = q.id
+  JOIN customers c ON q.customer_id = c.CustomerID
+  WHERE q.customer_id = ? AND i.id = ?
+  ORDER BY i.id DESC`,
+      [userId, invoiceId]
     );
 
     // Fetch invoice items for each invoice
@@ -967,7 +972,7 @@ export const getAllJobs = async (req, res) => {
   try {
     // Modified to sort by ID in descending order
     const [jobs] = await pool.query("SELECT * FROM jobs ORDER BY id DESC");
-    
+
     res.status(200).json({
       success: true,
       jobs,
@@ -1051,7 +1056,7 @@ export default {
   getPartiallyPaidJobs,
   getPartiallyPaidInvoices,
   getQuotationById,
-  createOrUpdateJob,     // Fixed function
+  createOrUpdateJob, // Fixed function
   updateCustomerQuotationStatus,
   updateQuotationAmount,
   createInvoice,
@@ -1063,5 +1068,5 @@ export default {
   getAllInvoices,
   getAllJobs,
   updateJob,
-  getJobsByCustomerId
+  getJobsByCustomerId,
 };

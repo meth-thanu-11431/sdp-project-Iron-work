@@ -9,7 +9,7 @@ import {
   Table,
   ProgressBar
 } from "react-bootstrap";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import axios from "axios";
 import {
   ArrowClockwise,
@@ -23,8 +23,12 @@ import {
   PeopleFill,
   CurrencyDollar,
   Search,
-  ExclamationTriangleFill
+  ExclamationTriangleFill,
+  FileEarmarkPdf,
+  Download
 } from "react-bootstrap-icons";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const JobManagement = () => {
   const [partiallyPaidInvoices, setPartiallyPaidInvoices] = useState([]);
@@ -39,6 +43,10 @@ const JobManagement = () => {
   const [lastDataRefresh, setLastDataRefresh] = useState(Date.now());
   const [activeTab, setActiveTab] = useState("all"); // 'all', 'not-started', 'in-progress', 'completed', 'expire-soon'
   const [search, setSearch] = useState("");
+  const [generatingPdf, setGeneratingPdf] = useState(false);
+  
+  // Ref for the table to be captured for PDF
+  const tableRef = useRef(null);
 
   // Enhanced data fetching as a memoized function for reuse
   const fetchAllData = useCallback(async (showLoadingState = true) => {
@@ -286,6 +294,125 @@ const JobManagement = () => {
     });
   };
   
+  // Get tab title for PDF based on active tab
+  const getTabTitle = () => {
+    switch (activeTab) {
+      case "not-started":
+        return "Not Started Jobs";
+      case "in-progress":
+        return "In Progress Jobs";
+      case "completed":
+        return "Completed Jobs";
+      case "expire-soon":
+        return "Jobs Expiring Soon";
+      default:
+        return "All Jobs";
+    }
+  };
+  
+  // Function to generate and download PDF
+  const generatePDF = async () => {
+    if (!tableRef.current) return;
+    
+    setGeneratingPdf(true);
+    
+    try {
+      // Create a new jsPDF instance
+      const pdf = new jsPDF('landscape', 'pt', 'a4');
+      
+      // Get the current date for the report
+      const currentDate = new Date().toLocaleDateString();
+      
+      // Get tab title
+      const tabTitle = getTabTitle();
+      const stats = getJobStats();
+      
+      // Set PDF title and metadata
+      pdf.setProperties({
+        title: `${tabTitle} Report - ${currentDate}`,
+        author: 'Job Management System',
+        creator: 'Job Management System',
+      });
+      
+      // Add report title
+      pdf.setFontSize(18);
+      pdf.text(`${tabTitle} Report`, 40, 40);
+      
+      // Add report date
+      pdf.setFontSize(12);
+      pdf.text(`Generated on: ${currentDate}`, 40, 60);
+      
+      // Add key statistics
+      pdf.setFontSize(12);
+      pdf.text('Report Summary:', 40, 80);
+      
+      let yPosition = 100;
+      const xPosition = 40;
+      
+      // Add different stats based on active tab
+      if (activeTab === 'all') {
+        pdf.text(`Total Jobs: ${stats.total}`, xPosition, yPosition);
+        yPosition += 20;
+        pdf.text(`Started Jobs: ${stats.started}`, xPosition, yPosition);
+        yPosition += 20;
+        pdf.text(`Not Started Jobs: ${stats.notStarted}`, xPosition, yPosition);
+        yPosition += 20;
+        pdf.text(`In Progress Jobs: ${stats.inProgress}`, xPosition, yPosition);
+        yPosition += 20;
+        pdf.text(`Completed Jobs: ${stats.completed}`, xPosition, yPosition);
+        yPosition += 20;
+        pdf.text(`Jobs Expiring Soon: ${stats.expiringSoon}`, xPosition, yPosition);
+      } else if (activeTab === 'not-started') {
+        pdf.text(`Total Not Started Jobs: ${stats.notStarted}`, xPosition, yPosition);
+      } else if (activeTab === 'in-progress') {
+        pdf.text(`Total In Progress Jobs: ${stats.inProgress}`, xPosition, yPosition);
+      } else if (activeTab === 'completed') {
+        pdf.text(`Total Completed Jobs: ${stats.completed}`, xPosition, yPosition);
+      } else if (activeTab === 'expire-soon') {
+        pdf.text(`Total Jobs Expiring Soon: ${stats.expiringSoon}`, xPosition, yPosition);
+      }
+      
+      yPosition += 40;
+      pdf.text(`Total Amount: LKR ${stats.totalAmount}`, xPosition, yPosition);
+      yPosition += 20;
+      pdf.text(`Paid Amount: LKR ${stats.paidAmount}`, xPosition, yPosition);
+      yPosition += 20;
+      pdf.text(`Remaining Amount: LKR ${stats.remainingAmount}`, xPosition, yPosition);
+      yPosition += 20;
+      pdf.text(`Payment Percentage: ${stats.paymentPercentage}%`, xPosition, yPosition);
+      
+      // Add some space before the table
+      yPosition += 40;
+      
+      // Use html2canvas to capture the table
+      const tableElement = tableRef.current;
+      const canvas = await html2canvas(tableElement, {
+        scale: 1,
+        useCORS: true,
+        logging: false,
+        allowTaint: false
+      });
+      
+      // Convert canvas to image
+      const imgData = canvas.toDataURL('image/png');
+      
+      // Calculate image dimensions to fit on PDF
+      const imgWidth = pdf.internal.pageSize.getWidth() - 80;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      // Add image to PDF
+      pdf.addImage(imgData, 'PNG', 40, yPosition, imgWidth, imgHeight);
+      
+      // Save the PDF
+      pdf.save(`${tabTitle.replace(/\s+/g, '_')}_Report_${currentDate.replace(/\//g, '-')}.pdf`);
+    } catch (err) {
+      console.error('Error generating PDF:', err);
+      setError('Error generating PDF: ' + err.message);
+    } finally {
+      setGeneratingPdf(false);
+    }
+  };
+  
   const stats = getJobStats();
   const filteredInvoices = getFilteredInvoices();
 
@@ -345,32 +472,61 @@ const JobManagement = () => {
             Partially Paid Jobs Management
           </h2>
 
-          {/* Add refresh button */}
-          <Button
-            variant="outline-primary"
-            onClick={handleManualRefresh}
-            disabled={refreshingData}
-            className="d-flex align-items-center"
-          >
-            {refreshingData ? (
-              <>
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                  className="me-2"
-                />
-                Refreshing...
-              </>
-            ) : (
-              <>
-                <ArrowClockwise className="me-2" />
-                Refresh Data
-              </>
-            )}
-          </Button>
+          <div className="d-flex">
+            {/* Download PDF Button */}
+            <Button
+              variant="outline-success"
+              onClick={generatePDF}
+              disabled={generatingPdf || loading || filteredInvoices.length === 0}
+              className="d-flex align-items-center me-2"
+            >
+              {generatingPdf ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                    className="me-2"
+                  />
+                  Generating PDF...
+                </>
+              ) : (
+                <>
+                  <FileEarmarkPdf className="me-2" />
+                  Download PDF
+                </>
+              )}
+            </Button>
+
+            {/* Refresh Data Button */}
+            <Button
+              variant="outline-primary"
+              onClick={handleManualRefresh}
+              disabled={refreshingData}
+              className="d-flex align-items-center"
+            >
+              {refreshingData ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                    className="me-2"
+                  />
+                  Refreshing...
+                </>
+              ) : (
+                <>
+                  <ArrowClockwise className="me-2" />
+                  Refresh Data
+                </>
+              )}
+            </Button>
+          </div>
         </div>
 
         {error && (
@@ -396,7 +552,7 @@ const JobManagement = () => {
             <Card className="h-100 shadow-sm">
               <Card.Body className="d-flex flex-column align-items-center justify-content-center">
                 <div className="d-flex justify-content-center align-items-center">
-                  
+                  <CurrencyDollar className="me-2 text-success" size={24} />
                   <h3 className="text-success mb-0">LKR {stats.paidAmount}</h3>
                 </div>
                 <p className="text-muted mb-0">Total Paid Amount</p>
@@ -529,7 +685,7 @@ const JobManagement = () => {
             ) : (
               <Card className="shadow-sm">
                 <Card.Body className="p-0">
-                  <Table responsive hover className="mb-0">
+                  <Table responsive hover className="mb-0" ref={tableRef}>
                     <thead className="bg-light">
                       <tr>
                         <th>Job ID</th>
